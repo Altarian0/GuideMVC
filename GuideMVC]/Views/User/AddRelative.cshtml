@@ -1,0 +1,38 @@
+﻿@model AddRelativeModel
+
+<form asp-action="AddRelative" asp-controller="User">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="RelativeTypeId" class="control-label">Родственная связь</label>
+        <select asp-for="RelativeTypeId" class="form-control" readonly="true">
+            <option selected>Родственная связь</option>
+            @foreach (var relativeType in Model.RelativeTypes)
+            {
+                <option value="@relativeType.Id">@relativeType.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="FromPersonId" class="control-label">От какого родственника ?</label>
+        <select asp-for="FromPersonId" class="form-control">
+            <option selected>Родственник</option>
+            @foreach (var fromPerson in Model.FromPersons)
+            {
+                <option value="@fromPerson.Id">@fromPerson.Lastname @fromPerson.Firstname @fromPerson.Middlename</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="ToPersonId" class="control-label">К какому родственнику ?</label>
+        <select asp-for="ToPersonId" class="form-control">
+            <option selected>Родственник</option>
+            @foreach (var toPerson in Model.ToPersons)
+            {
+                <option value="@toPerson.Id">@toPerson.Lastname @toPerson.Firstname @toPerson.Middlename</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-outline-secondary"/>
+    </div>
+</form>

@@ -1,0 +1,26 @@
+﻿@model GuideMVC_.ViewModels.LoginModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<h2>Войти</h2>
+<form method="post" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Login"></label><br/>
+        <input asp-for="Login"/>
+        <span asp-validation-for="Login"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label><br/>
+        <input asp-for="Password"/>
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <input type="checkbox" asp-for="RememberMe"/>
+        <a>Запомнить меня</a>
+    </div>
+    <div>
+        <input type="submit" value="Войти"/>
+    </div>
+</form>

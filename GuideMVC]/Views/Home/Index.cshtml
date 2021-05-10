@@ -1,0 +1,29 @@
+﻿@model List<Person>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Имя</th>
+            <th scope="col">Фамилия</th>
+            <th scope="col">Отчество</th>
+            <th scope="col">Связи</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var person in Model)
+        {
+            <tr>
+                <td>@person.Firstname</td>
+                <td>@person.Lastname</td>
+                <td>@person.Middlename</td>
+                <td><button type="button" class="btn btn-primary">Посмотреть связи</button></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
