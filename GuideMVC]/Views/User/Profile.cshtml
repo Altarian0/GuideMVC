@@ -107,16 +107,19 @@
                 @foreach (var person in Model.Siblings)
                 {
                     <tr>
-                        <td>@person.Firstname</td>
-                        <td>@person.Lastname</td>
-                        <td>@person.Middlename</td>
+                        <td>@person.Person.Firstname</td>
+                        <td>@person.Person.Lastname</td>
+                        <td>@person.Person.Middlename</td>
                         <td>
-                            <a asp-action="DeleteRelative" asp-controller="User"
-                               asp-route-toPersonId="@person.Id"
-                               asp-route-fromPersonId="@Model.Person.Id"
-                               asp-route-relativeTypeId="@((int) RelativeTypes.Siblings)">
-                                Удалить
-                            </a>
+                            @if (!person.IsParentChild)
+                            {
+                                <a asp-action="DeleteRelative" asp-controller="User"
+                                   asp-route-toPersonId="@person.Person.Id"
+                                   asp-route-fromPersonId="@Model.Person.Id"
+                                   asp-route-relativeTypeId="@((int) RelativeTypes.Siblings)">
+                                    Удалить
+                                </a>
+                            }
                         </td>
                     </tr>
                 }
@@ -171,7 +174,7 @@
         <div style="display: flex">
             <h4 class="card-title">Внуки</h4>
             <a asp-controller="User" asp-action="AddRelative" asp-route-fromPersonId="@Model.Person.Id" asp-route-relativeTypeId="@((int) RelativeTypes.Parents)"
-               class="btn btn-primary add-button" >
+               class="btn btn-primary add-button">
                 Добавить внука
             </a>
             <p></p>
@@ -183,7 +186,7 @@
                     <th scope="col">Имя</th>
                     <th scope="col">Фамилия</th>
                     <th scope="col">Отчество</th>
-                    
+
                 </tr>
                 </thead>
                 <tbody>
@@ -194,7 +197,6 @@
                         <td>@person.Lastname</td>
                         <td>@person.Middlename</td>
                     </tr>
-                    
                 }
                 </tbody>
             </table>

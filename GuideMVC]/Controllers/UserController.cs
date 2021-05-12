@@ -21,14 +21,16 @@ namespace GuideMVC_.Controllers
             _db = db;
         }
 
-        public async Task<IActionResult> Profile(string id)
+        public async Task<IActionResult> Profile(int id)
         {
-            if (string.IsNullOrEmpty(id))
-                id = _userManager.GetUserId(User);
-            var person = await _db.Persons.Include(n => n.ApplicationUser)
-                .FirstOrDefaultAsync(n => n.UserId == id);
+            Person person = new Person();
+            if (id == 0)
+                person = await _db.Persons.Include(n => n.ApplicationUser)
+                    .FirstOrDefaultAsync(n => n.UserId == _userManager.GetUserId(User));
+            else
+                person = await _db.Persons.Include(n => n.ApplicationUser)
+                    .FirstOrDefaultAsync(n => n.Id == id);
 
-            var relativeTypes = _db.RelativeTypes.Include(n => n.UserRelatives).ToList();
             var userRelatives = _db.UserRelatives
                 .Include(n => n.FromPerson)
                 .Include(n => n.ToPerson)
@@ -123,13 +125,13 @@ namespace GuideMVC_.Controllers
         public async Task<IActionResult> DeleteRelative(int toPersonId, int fromPersonId, int relativeTypeId)
         {
             var relative = _db.UserRelatives.FirstOrDefault(n =>
-                n.ToUserId == toPersonId &&
-                n.FromUserId == fromPersonId &&
-                n.RelativeTypeId == relativeTypeId) ?? 
+                               n.ToUserId == toPersonId &&
+                               n.FromUserId == fromPersonId &&
+                               n.RelativeTypeId == relativeTypeId) ??
                            _db.UserRelatives.FirstOrDefault(n =>
-                n.ToUserId == fromPersonId &&
-                n.FromUserId == toPersonId &&
-                n.RelativeTypeId == relativeTypeId);
+                               n.ToUserId == fromPersonId &&
+                               n.FromUserId == toPersonId &&
+                               n.RelativeTypeId == relativeTypeId);
             if (relative is null)
                 return RedirectToAction("Profile");
             _db.UserRelatives.Remove(relative);
