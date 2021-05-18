@@ -82,7 +82,6 @@ C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\bin\Debug\netcoreapp3.1\Microsof
 C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.Design.dll
 C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\GuideMVC].csproj.CoreCompileInputs.cache
 C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\GuideMVC].MvcApplicationPartsAssemblyInfo.cache
-C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\scopedcss\bundle\GuideMVC].styles.css
 C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\Razor\Views\Account\Login.cshtml.g.cs
 C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\Razor\Views\Account\Register.cshtml.g.cs
 C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\Razor\Views\Roles\Create.cshtml.g.cs
@@ -92,3 +91,6 @@ C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\Razor\Vi
 C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\Razor\Views\User\EditUser.cshtml.g.cs
 C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\Razor\Views\User\Profile.cshtml.g.cs
 C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\Razor\Views\User\AddRelative.cshtml.g.cs
+C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\Razor\Views\User\EditRelative.cshtml.g.cs
+C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\Razor\Views\User\AddUser.cshtml.g.cs
+C:\Users\kamal\source\repos\GuideMVC]\GuideMVC]\obj\Debug\netcoreapp3.1\scopedcss\bundle\GuideMVC].styles.css

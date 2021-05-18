@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GuideMVC_.Interfaces;
 using GuideMVC_.Models;
+using GuideMVC_.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +37,7 @@ namespace GuideMVC_
                 options.Password.RequireNonAlphanumeric = false;
                 options.SignIn.RequireConfirmedAccount = false;
             }).AddEntityFrameworkStores<GuideDBContext>();
+            services.AddScoped<IRelativeService, RelativeService>();
             services.AddControllersWithViews();
         }
 

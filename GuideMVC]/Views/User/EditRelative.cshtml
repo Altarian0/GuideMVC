@@ -1,10 +1,13 @@
-﻿@model AddRelativeModel
+﻿@model EditRelativeModel
 
-<form asp-action="AddRelative" asp-controller="User">
+<form asp-action="EditRelative" asp-controller="User">
+    <input asp-for="FromPersonId" hidden="hidden">
+    <input asp-for="ToPersonId" hidden="hidden">
+    <input asp-for="RelativeTypeId" hidden="hidden">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="RelativeTypeId" class="control-label">Родственная связь</label>
-        <select asp-for="RelativeTypeId" class="form-control" readonly="true">
+        <select asp-for="RelativeTypeId" class="form-control"  disabled="disabled" readonly="true">
             <option selected>Родственная связь</option>
             @foreach (var relativeType in Model.RelativeTypes)
             {
@@ -13,10 +16,10 @@
         </select>
     </div>
     <div class="form-group">
-        <label asp-for="FromPersonId" class="control-label">От какого родственника ?</label>
-        <select asp-for="FromPersonId" class="form-control">
+        <label asp-for="NewFromPersonId" class="control-label">От какого родственника ?</label>
+        <select asp-for="NewFromPersonId" class="form-control" >
             <option selected>Родственник</option>
-            @foreach (var fromPerson in Model.FromPersons)
+            @foreach (var fromPerson in Model.FromPersons.Where(n => n.GenderId == Model.ParentGender))
             {
                 <option value="@fromPerson.Id">@fromPerson.Lastname @fromPerson.Firstname @fromPerson.Middlename</option>
             }
@@ -24,7 +27,7 @@
     </div>
     <div class="form-group">
         <label asp-for="ToPersonId" class="control-label">К какому родственнику ?</label>
-        <select asp-for="ToPersonId" class="form-control">
+        <select asp-for="ToPersonId" class="form-control" disabled="disabled">
             <option selected>Родственник</option>
             @foreach (var toPerson in Model.ToPersons)
             {
@@ -32,12 +35,6 @@
             }
         </select>
     </div>
-    @if (User.IsInRole("Admin"))
-    {
-        <div class="form-group">
-            <a asp-action="AddUser" class="btn btn-outline-secondary">Добавить человека</a>
-        </div>
-    }
     <div class="form-group">
         <input type="submit" value="Сохранить" class="btn btn-outline-secondary"/>
     </div>

@@ -10,58 +10,69 @@
     }
 </style>
 <div class="page-content page-container" id="page-content">
-    <div class="padding">
-        <div class="row container d-flex justify-content-center">
-            <div class="col-xl-6 col-md-12">
-                <div class="card user-card-full">
-                    <div class="row m-l-0 m-r-0">
-                        <div class="col-sm-4 bg-c-lite-green user-profile">
-                            <div class="card-block text-center text-white">
-                                <div class="m-b-25">
-                                    <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
-                                </div>
-                                <a style="font-size:16px" class="f-w-600">@Model.Person.Lastname @Model.Person.Firstname</a>
-                                @foreach (var role in ViewBag.UserRoles)
-                                {
-                                    <p style="margin: auto auto auto 0">@role</p>
-                                    <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
-                                }
+<div class="padding">
+    <div class="row container d-flex justify-content-center">
+        <div class="col-xl-6 col-md-12">
+            <div class="card user-card-full">
+                <div class="row m-l-0 m-r-0">
+                    <div class="col-sm-4 bg-c-lite-green user-profile">
+                        <div class="card-block text-center text-white">
+                            <div class="m-b-25">
+                                <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
                             </div>
+                            <a style="font-size:16px" class="f-w-600">@Model.Person.Lastname @Model.Person.Firstname</a>
+                            @foreach (var role in ViewBag.UserRoles)
+                            {
+                                <p style="margin: auto auto auto 0">@role</p>
+                                <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
+                            }
                         </div>
-                        <div class="col-sm-8">
-                            <div class="card-block">
-                                <h6 class="m-b-20 p-b-5 b-b-default f-w-600">Information</h6>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Email</p>
-                                        <h6 class="text-muted f-w-400">@User.Identity.Name</h6>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Отчество</p>
-                                        <h6 class="text-muted f-w-400">@Model.Person.Middlename</h6>
-                                    </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="card-block">
+                            <h6 class="m-b-20 p-b-5 b-b-default f-w-600">Information</h6>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="m-b-10 f-w-600">Email</p>
+                                    <h6 class="text-muted f-w-400">@Model.Person.ApplicationUser.Email</h6>
                                 </div>
-                                <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Дополнительно</h6>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Дата рождения</p>
-                                        @if (Model.Person.Birthdate == null)
-                                        {
-                                            <h6 class="text-muted f-w-400">Не указан</h6>
-                                        }
-                                        else
-                                        {
-                                            <h6 class="text-muted f-w-400">@(((DateTime) Model.Person.Birthdate).ToShortDateString())</h6>
-                                        }
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Серия и номер паспорта</p>
-                                        <h6 class="text-muted f-w-400">@Model.Person.PassportNumber @Model.Person.PassportSeries</h6>
-                                    </div>
+                                <div class="col-sm-6">
+                                    <p class="m-b-10 f-w-600">Отчество</p>
+                                    <h6 class="text-muted f-w-400">@Model.Person.Middlename</h6>
                                 </div>
-                                <div style="text-align:center; margin-top:20px">
-                                    <a asp-action="EditUser" asp-controller="User" type="button" class="btn btn-info">Редактировать</a>
+                            </div>
+                            <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Дополнительно</h6>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="m-b-10 f-w-600">Дата рождения</p>
+                                    @if (Model.Person.Birthdate == null)
+                                    {
+                                        <h6 class="text-muted f-w-400">Не указан</h6>
+                                    }
+                                    else
+                                    {
+                                        <h6 class="text-muted f-w-400">@(((DateTime) Model.Person.Birthdate).ToShortDateString())</h6>
+                                    }
                                 </div>
+                                <div class="col-sm-6">
+                                    <p class="m-b-10 f-w-600">Серия и номер паспорта</p>
+                                    <h6 class="text-muted f-w-400">@Model.Person.PassportNumber @Model.Person.PassportSeries</h6>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="m-b-10 f-w-600">Адрес</p>
+                                    <h6 class="text-muted f-w-400">@Model.Person.Address</h6>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="m-b-10 f-w-600">Родина</p>
+                                    <h6 class="text-muted f-w-400">@Model.Person.Homeland</h6>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="m-b-10 f-w-600">Телефон</p>
+                                    <h6 class="text-muted f-w-400">+@Model.Person.Phone</h6>
+                                </div>
+                            </div>
+                            <div style="text-align:center; margin-top:20px">
+                                <a asp-action="EditUser" asp-controller="User" type="button" class="btn btn-info">Редактировать</a>
                             </div>
                         </div>
                     </div>
@@ -69,138 +80,194 @@
             </div>
         </div>
     </div>
-    <div style="padding-top: 10px; margin-bottom: 10px">
-        <h5>
-            Отец:
-            <a style="color: #3464d0"> @Model.Father.Lastname @Model.Father.Firstname @Model.Father.Middlename</a>
-            <a class="btn btn-group" style="margin-left: 15px">Изменить</a>
-        </h5>
-        <h5>
-            Мать:
-            <a style="color: #3464d0">@Model.Mother.Lastname @Model.Mother.Firstname @Model.Mother.Middlename</a>
-        </h5>
+</div>
+<div style="padding-top: 10px; margin-bottom: 10px">
+
+
+    <h5>
+        @if (Model.Person.GenderId == 1)
+        {
+            <a>Жена:</a>
+        }
+        else
+        {
+            <a>Муж:</a>
+        }
+
+        <a asp-action="Profile" asp-route-id="@Model.Spouse.Id" style="color: #3464d0">
+            @Model.Spouse.Lastname @Model.Spouse.Firstname @Model.Spouse.Middlename
+        </a>
+        <a asp-action="DeleteMarriage" asp-route-fromPersonId="@Model.Spouse.Id"
+           asp-route-toPersonId="@Model.Person.Id"
+           asp-route-relativeTypeId="@((int) RelativeTypes.Spouse)"
+           asp-route-parentGender="@(Model.Person.GenderId == 1 ? 2 : 1)"
+           class="btn btn-group" style="margin-left: 15px">
+            Развод
+        </a>
+    </h5>
+
+    <p></p>
+    <h5>
+        Отец:
+        <a asp-action="Profile" asp-route-id="@Model.Father.Id" style="color: #3464d0"> @Model.Father.Lastname @Model.Father.Firstname @Model.Father.Middlename</a>
+        <a asp-action="EditRelative" asp-route-fromPersonId="@Model.Father.Id"
+           asp-route-toPersonId="@Model.Person.Id"
+           asp-route-relativeTypeId="@((int) RelativeTypes.Parents)"
+           asp-route-parentGender="1"
+           class="btn btn-group" style="margin-left: 15px">
+            Изменить
+        </a>
+    </h5>
+    <h5>
+        Мать:
+        <a asp-action="Profile" asp-route-id="@Model.Mother.Id" style="color: #3464d0">@Model.Mother.Lastname @Model.Mother.Firstname @Model.Mother.Middlename</a>
+        <a asp-action="EditRelative" asp-route-fromPersonId="@Model.Mother.Id"
+           asp-route-toPersonId="@Model.Person.Id"
+           asp-route-relativeTypeId="@((int) RelativeTypes.Parents)"
+           asp-route-parentGender="2"
+           class="btn btn-group" style="margin-left: 15px">
+            Изменить
+        </a>
+    </h5>
+    <p></p>
+    <h5>
+        Дедушка:
+        <a asp-action="Profile" asp-route-id="@Model.Grandfather.Id" style="color: #3464d0">@Model.Grandfather.Lastname @Model.Grandfather.Firstname @Model.Grandfather.Middlename</a>
+    </h5>
+    <h5>
+        Бабушка:
+        <a asp-action="Profile" asp-route-id="@Model.Grandmother.Id" style="color: #3464d0">@Model.Grandmother.Lastname @Model.Grandmother.Firstname @Model.Grandmother.Middlename</a>
+    </h5>
+</div>
+
+<div>
+    <div style="display: flex">
+        <h4 class="card-title">Братья и сестра</h4>
+        <a asp-controller="User" asp-action="AddRelative" asp-route-toPersonId="@Model.Person.Id" asp-route-relativeTypeId="@((int) RelativeTypes.Siblings)"
+           class="btn btn-primary add-button">
+            Добавить брата/сестру
+        </a>
         <p></p>
-        <h5>Дедушка: <a style="color: #3464d0">@Model.Grandfather.Lastname @Model.Grandfather.Firstname @Model.Grandfather.Middlename</a></h5>
-        <h5>Бабушка: <a style="color: #3464d0">@Model.Grandmother.Lastname @Model.Grandmother.Firstname @Model.Grandmother.Middlename</a></h5>
     </div>
-
-    <div>
-        <div style="display: flex">
-            <h4 class="card-title">Братья и сестра</h4>
-            <a asp-controller="User" asp-action="AddRelative" asp-route-toPersonId="@Model.Person.Id" asp-route-relativeTypeId="@((int) RelativeTypes.Siblings)"
-               class="btn btn-primary add-button">
-                Добавить брата/сестру
-            </a>
-            <p></p>
-        </div>
-        <div class="table-responsive-sm">
-            <table class="table">
-                <thead>
+    <div class="table-responsive-sm">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Имя</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Профиль</th>
+                <th scope="col">Удалить</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var person in Model.Siblings)
+            {
                 <tr>
-                    <th scope="col">Имя</th>
-                    <th scope="col">Фамилия</th>
-                    <th scope="col">Отчество</th>
-                    <th scope="col">Удалить</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var person in Model.Siblings)
-                {
-                    <tr>
-                        <td>@person.Person.Firstname</td>
-                        <td>@person.Person.Lastname</td>
-                        <td>@person.Person.Middlename</td>
-                        <td>
-                            @if (!person.IsParentChild)
-                            {
-                                <a asp-action="DeleteRelative" asp-controller="User"
-                                   asp-route-toPersonId="@person.Person.Id"
-                                   asp-route-fromPersonId="@Model.Person.Id"
-                                   asp-route-relativeTypeId="@((int) RelativeTypes.Siblings)">
-                                    Удалить
-                                </a>
-                            }
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-
-    <div>
-        <div style="display: flex">
-            <h4 class="card-title">Дети</h4>
-            <a asp-controller="User" asp-action="AddRelative" asp-route-fromPersonId="@Model.Person.Id" asp-route-relativeTypeId="@((int) RelativeTypes.Parents)"
-               class="btn btn-primary add-button">
-                Добавить ребенка
-            </a>
-            <p></p>
-        </div>
-        <div class="table-responsive-sm">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Имя</th>
-                    <th scope="col">Фамилия</th>
-                    <th scope="col">Отчество</th>
-                    <th scope="col">Удалить</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var person in Model.GetChildren(Model.Person.Id))
-                {
-                    <tr>
-                        <td>@person.Firstname</td>
-                        <td>@person.Lastname</td>
-                        <td>@person.Middlename</td>
-                        <td>
+                    <td>@person.Person.Firstname</td>
+                    <td>@person.Person.Lastname</td>
+                    <td>@person.Person.Middlename</td>
+                    <td>
+                        <a asp-action="Profile" asp-route-id="@person.Person.Id" type="button" class="btn-primary">Профиль</a>
+                    </td>
+                    <td>
+                        @if (!person.IsParentChild)
+                        {
                             <a asp-action="DeleteRelative" asp-controller="User"
-                               asp-route-toPersonId="@person.Id"
+                               asp-route-toPersonId="@person.Person.Id"
+                               asp-route-fromPersonId="@Model.Person.Id"
+                               asp-route-relativeTypeId="@((int) RelativeTypes.Siblings)">
+                                Удалить
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div>
+    <div style="display: flex">
+        <h4 class="card-title">Дети</h4>
+        <a asp-controller="User" asp-action="AddRelative" asp-route-fromPersonId="@Model.Person.Id" asp-route-relativeTypeId="@((int) RelativeTypes.Parents)"
+           class="btn btn-primary add-button">
+            Добавить ребенка
+        </a>
+        <p></p>
+    </div>
+    <div class="table-responsive-sm">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Имя</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Профиль</th>
+                <th scope="col">Удалить</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var person in Model.Children)
+            {
+                <tr>
+                    <td>@person.Person.Firstname</td>
+                    <td>@person.Person.Lastname</td>
+                    <td>@person.Person.Middlename</td>
+                    <td>
+                        <a asp-action="Profile" asp-route-id="@person.Person.Id" type="button" class="btn-primary">Профиль</a>
+                    </td>
+                    <td>
+                        @if (person.IsParentChild)
+                        {
+                            <a asp-action="DeleteRelative" asp-controller="User"
+                               asp-route-toPersonId="@person.Person.Id"
                                asp-route-fromPersonId="@Model.Person.Id"
                                asp-route-relativeTypeId="@((int) RelativeTypes.Parents)">
                                 Удалить
                             </a>
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div>
-        <div style="display: flex">
-            <h4 class="card-title">Внуки</h4>
-            <a asp-controller="User" asp-action="AddRelative" asp-route-fromPersonId="@Model.Person.Id" asp-route-relativeTypeId="@((int) RelativeTypes.Parents)"
-               class="btn btn-primary add-button">
-                Добавить внука
-            </a>
-            <p></p>
-        </div>
-        <div class="table-responsive-sm">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Имя</th>
-                    <th scope="col">Фамилия</th>
-                    <th scope="col">Отчество</th>
-
+                        }
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
-                @foreach (var person in Model.GetGrandchildren(Model.Person.Id))
-                {
-                    <tr>
-                        <td>@person.Firstname</td>
-                        <td>@person.Lastname</td>
-                        <td>@person.Middlename</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </div>
+            }
+            </tbody>
+        </table>
     </div>
+</div>
+
+<div>
+    <div style="display: flex">
+        <h4 class="card-title">Внуки</h4>
+        <p></p>
+    </div>
+    <div class="table-responsive-sm">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Имя</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Профиль</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var person in Model.Grandchildren)
+            {
+                <tr>
+                    <td>@person.Firstname</td>
+                    <td>@person.Lastname</td>
+                    <td>@person.Middlename</td>
+                    <td>
+                        <a asp-action="Profile" asp-route-id="@person.Id" type="button" class="btn-primary">Профиль</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 </div>

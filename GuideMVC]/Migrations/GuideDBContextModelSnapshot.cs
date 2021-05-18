@@ -101,12 +101,39 @@ namespace GuideMVC_.Migrations
                     b.ToTable("Genders");
                 });
 
+            modelBuilder.Entity("GuideMVC_.Models.Marriage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DivorceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDivorced")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("WeddDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Marriages");
+                });
+
             modelBuilder.Entity("GuideMVC_.Models.Person", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Birthdate")
                         .HasColumnType("date");
@@ -116,6 +143,12 @@ namespace GuideMVC_.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("GenderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Homeland")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("HusbandMarriageId")
                         .HasColumnType("int");
 
                     b.Property<string>("Lastname")
@@ -134,16 +167,26 @@ namespace GuideMVC_.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("WifeMarriageId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GenderId");
 
+                    b.HasIndex("HusbandMarriageId");
+
                     b.HasIndex("UserId")
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
+
+                    b.HasIndex("WifeMarriageId");
 
                     b.ToTable("User");
                 });
@@ -176,9 +219,14 @@ namespace GuideMVC_.Migrations
                     b.Property<int>("RelativeTypeId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("MarriageId")
+                        .HasColumnType("int");
+
                     b.HasKey("ToUserId", "FromUserId", "RelativeTypeId");
 
                     b.HasIndex("FromUserId");
+
+                    b.HasIndex("MarriageId");
 
                     b.HasIndex("RelativeTypeId");
 
@@ -324,13 +372,25 @@ namespace GuideMVC_.Migrations
                         .HasConstraintName("FK_User_Genders")
                         .IsRequired();
 
+                    b.HasOne("GuideMVC_.Models.Marriage", "HusbandMarriage")
+                        .WithMany()
+                        .HasForeignKey("HusbandMarriageId");
+
                     b.HasOne("GuideMVC_.Models.ApplicationUser", "ApplicationUser")
                         .WithOne("Person")
                         .HasForeignKey("GuideMVC_.Models.Person", "UserId");
 
+                    b.HasOne("GuideMVC_.Models.Marriage", "WifeMarriage")
+                        .WithMany()
+                        .HasForeignKey("WifeMarriageId");
+
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Gender");
+
+                    b.Navigation("HusbandMarriage");
+
+                    b.Navigation("WifeMarriage");
                 });
 
             modelBuilder.Entity("GuideMVC_.Models.UserRelative", b =>
@@ -340,6 +400,10 @@ namespace GuideMVC_.Migrations
                         .HasForeignKey("FromUserId")
                         .HasConstraintName("FK_UserRelatives_User1")
                         .IsRequired();
+
+                    b.HasOne("GuideMVC_.Models.Marriage", "Marriage")
+                        .WithMany("Relatives")
+                        .HasForeignKey("MarriageId");
 
                     b.HasOne("GuideMVC_.Models.RelativeType", "RelativeType")
                         .WithMany("UserRelatives")
@@ -354,6 +418,8 @@ namespace GuideMVC_.Migrations
                         .IsRequired();
 
                     b.Navigation("FromPerson");
+
+                    b.Navigation("Marriage");
 
                     b.Navigation("RelativeType");
 
@@ -419,6 +485,11 @@ namespace GuideMVC_.Migrations
             modelBuilder.Entity("GuideMVC_.Models.Gender", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("GuideMVC_.Models.Marriage", b =>
+                {
+                    b.Navigation("Relatives");
                 });
 
             modelBuilder.Entity("GuideMVC_.Models.Person", b =>

@@ -16,6 +16,7 @@ namespace GuideMVC_.Models
         public virtual DbSet<Gender> Genders { get; set; }
         public virtual DbSet<RelativeType> RelativeTypes { get; set; }
         public virtual DbSet<Person> Persons { get; set; }
+        public virtual DbSet<Marriage> Marriages { get; set; }
         public virtual DbSet<UserRelative> UserRelatives { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -36,6 +37,7 @@ namespace GuideMVC_.Models
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
 
+
             modelBuilder.Entity<RelativeType>(entity =>
             {
                 entity.Property(e => e.Name)
@@ -46,8 +48,8 @@ namespace GuideMVC_.Models
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(m => m.Person)
                 .WithOne(m => m.ApplicationUser)
-                .HasForeignKey<Person>(p=>p.UserId);
-            
+                .HasForeignKey<Person>(p => p.UserId);
+
             modelBuilder.Entity<Person>(entity =>
             {
                 entity.ToTable("User");
@@ -62,18 +64,32 @@ namespace GuideMVC_.Models
 
                 entity.Property(e => e.PassportNumber).HasMaxLength(4);
 
+
                 entity.Property(e => e.PassportSeries).HasMaxLength(6);
-                
+
                 entity.HasOne(d => d.Gender)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.GenderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_User_Genders");
+
+            });
+
+            modelBuilder.Entity<Marriage>(entity =>
+            {
+                entity.HasKey(e => e.Id);
             });
 
             modelBuilder.Entity<UserRelative>(entity =>
             {
-                entity.HasKey(e => new { e.ToUserId, e.FromUserId, e.RelativeTypeId });
+                entity.HasKey(e => new { e.ToUserId, e.FromUserId, e.RelativeTypeId});
+                entity.Property(e => e.MarriageId).IsRequired(false);
+
+
+                entity.HasOne(d => d.Marriage)
+                .WithMany(p => p.Relatives)
+                .HasForeignKey(d => d.MarriageId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.FromPerson)
                     .WithMany(p => p.UserRelativeFromUsers)
@@ -94,7 +110,7 @@ namespace GuideMVC_.Models
                     .HasConstraintName("FK_UserRelatives_User");
             });
 
-           
+
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

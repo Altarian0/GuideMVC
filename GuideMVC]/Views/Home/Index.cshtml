@@ -21,7 +21,7 @@
                 <td>@person.Firstname</td>
                 <td>@person.Lastname</td>
                 <td>@person.Middlename</td>
-                <td><button type="button" class="btn btn-primary">Посмотреть связи</button></td>
+                <td><a asp-action="Profile" asp-controller="User" asp-route-id="@person.Id" type="button" class="btn btn-primary">Посмотреть связи</a></td>
             </tr>
         }
         </tbody>

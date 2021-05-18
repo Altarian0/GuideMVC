@@ -1,12 +1,9 @@
-﻿@model GuideMVC_.ViewModels.EditUserModel
+﻿@model GuideMVC_.ViewModels.AddUserModel
 @{
 }
 
-<form asp-action="EditUser" asp-controller="User">
+<form asp-action="AddUser" asp-controller="User">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <input type="hidden" asp-for="Id"/>
-    </div>
     <div class="form-group">
         <label asp-for="FirstName" class="control-label">Имя</label>
         <input type="text" asp-for="FirstName" class="form-control"/>
@@ -30,19 +27,19 @@
         </div>
     </div>
     <div style="display: flex">
-            <div class="form-group" style="width: 50%">
-                <label asp-for="Address" class="control-label">Адрес</label>
-                <input type="text" asp-for="Address" class="form-control"/>
-            </div>
-            <div class="form-group" style="width: 40%; margin-left: 10px">
-                <label asp-for="Homeland" class="control-label">Родина</label>
-                <input type="text" asp-for="Homeland" class="form-control"/>
-            </div>
+        <div class="form-group" style="width: 50%">
+            <label asp-for="Address" class="control-label">Адрес</label>
+            <input type="text" asp-for="Address" class="form-control"/>
         </div>
-        <div class="form-group">
-            <label asp-for="Phone" class="control-label">Телефон</label>
-            <input type="text" asp-for="Phone" class="form-control"/>
+        <div class="form-group" style="width: 40%; margin-left: 10px">
+            <label asp-for="Homeland" class="control-label">Родина</label>
+            <input type="text" asp-for="Homeland" class="form-control"/>
         </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Phone" class="control-label">Телефон</label>
+        <input type="text" asp-for="Phone" class="form-control"/>
+    </div>
     <div class="form-group">
         <label asp-for="BirthDate" class="control-label">Дата рождения</label>
         <input type="date" asp-for="BirthDate" class="form-control"/>
@@ -55,7 +52,15 @@
             {
                 <option value="@gender.Id">@gender.Name</option>
             }
-        </select>   
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label">Email</label>
+        <input type="text" asp-for="Email" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label">Пароль</label>
+        <input type="text" asp-for="Password" class="form-control"/>
     </div>
     <div class="form-group">
         <input type="submit" value="Сохранить" class="btn btn-outline-secondary"/>

@@ -1,0 +1,127 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using GuideMVC_.Helpers;
+using GuideMVC_.Interfaces;
+using GuideMVC_.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace GuideMVC_.Services
+{
+    public class RelativeService : IRelativeService
+    {
+        private readonly GuideDBContext _db;
+        private static List<UserRelative> _relatives;
+
+
+        public RelativeService(GuideDBContext db)
+        {
+            _db = db;
+            _relatives = _db.UserRelatives
+                .Include(n => n.FromPerson)
+                .Include(n => n.ToPerson)
+                .ToList();;
+        }
+
+        public List<PersonView> GetSiblings(int personId)
+        {
+            var relatives = _relatives
+                .Where(n => n.RelativeTypeId == (int) RelativeTypes.Siblings).ToList();
+            var from = relatives.Where(n => n.FromUserId != personId)
+                .Select(n => n.FromPerson).ToList();
+            var to = relatives.Where(n => n.ToUserId != personId)
+                .Select(n => n.ToPerson).ToList();
+            var siblings = from.Union(to).ToList();
+
+            var parents = GetParents(personId);
+            var parentsChildren = new List<Person>();
+            parents.ForEach(parent =>
+            {
+                parentsChildren = parentsChildren.Union(GetPersonChildren(parent.Id)).ToList();
+            });
+            parentsChildren.Remove(parentsChildren.FirstOrDefault(n => n.Id == personId));
+            List<PersonView> personViews = new List<PersonView>();
+            parentsChildren.ForEach(n => personViews.Add(new PersonView() {Person = n, IsParentChild = true}));
+            siblings.ForEach(n => personViews.Add(new PersonView() {Person = n}));
+            return personViews.Distinct().ToList();
+        }
+
+        public List<Person> GetParents(int childId)
+        {
+            var relatives = _relatives
+                .Where(n => n.FromUserId == childId || n.ToUserId == childId)
+                .Where(n => n.RelativeTypeId == (int) Helpers.RelativeTypes.Parents)
+                .ToList();
+            var parents = relatives.Where(n => n.FromUserId != childId)
+                .Select(n => n.FromPerson).ToList();
+            return parents;
+        }
+
+        public List<Person> GetChildren(int parentId)
+        {
+            var children = GetPersonChildren(parentId);
+            var spouseChildren = GetPersonChildren(GetSpouse(parentId).Id);
+
+            return children.Union(spouseChildren).ToList();
+        }
+        public List<PersonView> GetChildrenViews(int parentId)
+        {
+            var childrenPv = new List<PersonView>();
+            var spouseChildrenPv = new List<PersonView>();
+
+            var children = GetPersonChildren(parentId);
+            var spouseChildren = GetPersonChildren(GetSpouse(parentId).Id);
+
+            children.ForEach(n =>
+            {
+                childrenPv.Add(new PersonView() {Person = n, IsParentChild = true});
+            });
+            spouseChildren.ForEach(n =>
+            {
+                spouseChildrenPv.Add(new PersonView() {Person = n, IsParentChild = false});
+            });
+            return childrenPv.Union(spouseChildrenPv).ToList();
+        }
+        
+        public List<Person> GetPersonChildren(int parentId)
+        {
+            var relatives = _relatives
+                .Where(n => n.FromUserId == parentId || n.ToUserId == parentId)
+                .Where(n => n.RelativeTypeId == (int) Helpers.RelativeTypes.Parents)
+                .ToList();
+            var children = relatives.Where(n => n.ToUserId != parentId)
+                .Select(n => n.ToPerson).ToList();
+            return children;
+        }
+
+        public List<Person> GetGrandchildren(int grandparentId)
+        {
+            var children = GetPersonChildren(grandparentId);
+            var grandchildren = new List<Person>();
+            children.ForEach(child => { grandchildren = grandchildren.Union(GetPersonChildren(child.Id)).ToList(); });
+            return grandchildren;
+        }
+
+        public Person GetFather(int childId)
+        {
+            var parents = GetParents(childId);
+            return parents.FirstOrDefault(n => n.GenderId == 1) ?? new Person();
+        }
+
+        public Person GetMother(int childId)
+        {
+            var parents = GetParents(childId);
+            return parents.FirstOrDefault(n => n.GenderId == 2) ?? new Person();
+        }
+
+        public Person GetSpouse(int personId)
+        {
+            var relative = _relatives
+                .Where(n => n.FromUserId == personId || n.ToUserId == personId)
+                .FirstOrDefault(n => n.RelativeTypeId == (int) RelativeTypes.Spouse);
+            if (relative is null)
+                return new Person();
+            var spouse = relative.FromUserId == personId ? relative.ToPerson : relative.FromPerson;
+            return spouse;
+        }
+    }
+}

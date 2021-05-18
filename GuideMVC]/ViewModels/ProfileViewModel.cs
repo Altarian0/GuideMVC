@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GuideMVC_.Helpers;
+using GuideMVC_.Interfaces;
 using GuideMVC_.Models;
+using GuideMVC_.Services;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GuideMVC_.ViewModels
@@ -9,76 +11,14 @@ namespace GuideMVC_.ViewModels
     public class ProfileViewModel
     {
         public Person Person { get; set; }
-        public Person Father => GetFather(Person.Id);
-        public Person Mother => GetMother(Person.Id);
-        public Person Grandfather => GetFather(GetFather(Person.Id).Id);
-        public Person Grandmother => GetMother(Mother.Id);
-        public List<PersonView> Siblings => GetSiblings(Person.Id);
-        public List<UserRelative> Relatives { get; set; }
+        public Person Father { get; set; }
+        public Person Mother { get; set; }
+        public Person Grandfather { get; set; }
+        public Person Grandmother { get; set; }
+        public Person Spouse { get; set; }
+        public List<PersonView> Siblings { get; set; }
 
-        public List<PersonView> GetSiblings(int personId)
-        {
-            var relatives = Relatives
-                .Where(n => n.RelativeTypeId == (int) RelativeTypes.Siblings).ToList();
-            var from = relatives.Where(n => n.FromUserId != personId)
-                .Select(n => n.FromPerson).ToList();
-            var to = relatives.Where(n => n.ToUserId != personId)
-                .Select(n => n.ToPerson).ToList();
-            var siblings = from.Union(to).ToList();
-
-            var parents = GetParents(personId);
-            var parentsChildren = new List<Person>();
-            parents.ForEach(parent =>
-            {
-                parentsChildren = parentsChildren.Union(GetChildren(parent.Id)).ToList();
-            });
-            parentsChildren.Remove(parentsChildren.FirstOrDefault(n => n.Id == personId));
-            List<PersonView> personViews = new List<PersonView>();
-            parentsChildren.ForEach(n=>personViews.Add(new PersonView(){Person = n, IsParentChild = true}));
-            siblings.ForEach(n=>personViews.Add(new PersonView(){Person = n}));
-            return personViews.Distinct().ToList();
-        }
-
-        public List<Person> GetParents(int childId)
-        {
-            var relatives = Relatives
-                .Where(n => n.FromUserId == childId || n.ToUserId == childId)
-                .Where(n => n.RelativeTypeId == (int) Helpers.RelativeTypes.Parents)
-                .ToList();
-            var parents = relatives.Where(n => n.FromUserId != childId)
-                .Select(n => n.FromPerson).ToList();
-            return parents;
-        }
-
-        public List<Person> GetChildren(int parentId)
-        {
-            var relatives = Relatives
-                .Where(n => n.FromUserId == parentId || n.ToUserId == parentId)
-                .Where(n => n.RelativeTypeId == (int) Helpers.RelativeTypes.Parents)
-                .ToList();
-            var children = relatives.Where(n => n.ToUserId != parentId)
-                .Select(n => n.ToPerson).ToList();
-            return children;
-        }
-
-        public List<Person> GetGrandchildren(int grandparentId)
-        {
-            var children = GetChildren(grandparentId);
-            var grandchildren = new List<Person>();
-            children.ForEach(child => { grandchildren = grandchildren.Union(GetChildren(child.Id)).ToList(); });
-            return grandchildren;
-        }
-
-        public Person GetFather(int childId)
-        {
-            var parents = GetParents(childId);
-            return parents.FirstOrDefault(n => n.GenderId == 1) ?? new Person();
-        }
-
-        public Person GetMother(int childId)
-        {
-            var parents = GetParents(childId);
-            return parents.FirstOrDefault(n => n.GenderId == 2) ?? new Person();
-        }
+        public List<Person> Grandchildren { get; set; }
+        public List<PersonView> Children { get; set; }
     }
 }

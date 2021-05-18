@@ -23,10 +23,16 @@ namespace GuideMVC_.Models
         public string PassportSeries { get; set; }
         public int GenderId { get; set; } 
         public string UserId { get; set; }
+        public string Address { get; set; }
+        public string Phone { get; set; }
+        public string Homeland { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual Gender Gender { get; set; }
         public virtual ICollection<UserRelative> UserRelativeFromUsers { get; set; }
         public virtual ICollection<UserRelative> UserRelativeToUsers { get; set; }
+        public virtual Marriage WifeMarriage{ get; set; }
+        public virtual Marriage HusbandMarriage { get; set; }
+
     }
 }
