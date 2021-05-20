@@ -1,17 +1,26 @@
 ﻿@model AddRelativeModel
 
 <form asp-action="AddRelative" asp-controller="User">
+    <input asp-for="MarriageId" hidden="hidden">
+    <input asp-for="RelativeTypeId" hidden="hidden">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="RelativeTypeId" class="control-label">Родственная связь</label>
-        <select asp-for="RelativeTypeId" class="form-control" readonly="true">
-            <option selected>Родственная связь</option>
-            @foreach (var relativeType in Model.RelativeTypes)
-            {
-                <option value="@relativeType.Id">@relativeType.Name</option>
-            }
-        </select>
-    </div>
+    @if (Model.RelativeTypeId != 1)
+    {
+        <div class="form-group">
+            <label asp-for="RelativeTypeId" class="control-label">Родственная связь</label>
+            <select asp-for="RelativeTypeId" class="form-control">
+                <option selected>Родственная связь</option>
+                @foreach (var relativeType in Model.RelativeTypes)
+                {
+                    <option value="@relativeType.Id">@relativeType.Name</option>
+                }
+            </select>
+        </div>
+    }
+    else
+    {
+        <h3>Брак</h3>
+    }
     <div class="form-group">
         <label asp-for="FromPersonId" class="control-label">От какого родственника ?</label>
         <select asp-for="FromPersonId" class="form-control">
@@ -32,6 +41,23 @@
             }
         </select>
     </div>
+    @if (Model.RelativeTypeId == 1)
+    {
+        <div style="display: flex">
+            <div class="form-group" style="width: 50%">
+                <label asp-for="WeddDate" class="control-label">Дата свадьбы</label>
+                <input type="date" asp-for="WeddDate" class="form-control"/>
+            </div>
+            <div class="form-group" style="width: 40%; margin-left: 10px">
+                <label asp-for="DivorceDate" class="control-label">Дата развода (если разведены)</label>
+                <input type="date" asp-for="DivorceDate" class="form-control"/>
+            </div>
+            <div class="form-group" style="width: 10%; margin-left: 10px">
+                <label asp-for="IsDivorced" class="control-label">Разведены</label>
+                <input type="checkbox" asp-for="IsDivorced" class="form-control"/>
+            </div>
+        </div>
+    }
     @if (User.IsInRole("Admin"))
     {
         <div class="form-group">

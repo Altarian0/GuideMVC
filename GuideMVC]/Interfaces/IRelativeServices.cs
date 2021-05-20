@@ -14,5 +14,7 @@ namespace GuideMVC_.Interfaces
         Person GetFather(int childId);
         Person GetMother(int childId);
         Person GetSpouse(int personId);
+        Marriage GetMarriage(int personId);
+        List<Marriage> GetMarriages(int personId);
     }
 }

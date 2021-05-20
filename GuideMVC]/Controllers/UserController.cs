@@ -48,13 +48,14 @@ namespace GuideMVC_.Controllers
             profile.Siblings = _relativeService.GetSiblings(person.Id);
             profile.Grandchildren = _relativeService.GetGrandchildren(person.Id);
             profile.Children = _relativeService.GetChildrenViews(person.Id);
-
+            profile.Marriage = _relativeService.GetMarriage(person.Id);
+            profile.Marriages = _relativeService.GetMarriages(person.Id);
 
             ViewBag.UserRoles = await _userManager.GetRolesAsync(person.ApplicationUser);
             return View(profile);
         }
-        
-        [Authorize(Roles="Admin")]
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult AddUser()
         {
@@ -62,13 +63,14 @@ namespace GuideMVC_.Controllers
             addUserModel.Genders = _db.Genders.ToList();
             return View(addUserModel);
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> AddUser(AddUserModel addUserModel)
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser user = new ApplicationUser() { Email = addUserModel.Email, UserName = addUserModel.Email };
+                ApplicationUser user = new ApplicationUser()
+                    {Email = addUserModel.Email, UserName = addUserModel.Email};
 
                 var operation = await _userManager.CreateAsync(user, addUserModel.Password);
 
@@ -86,7 +88,7 @@ namespace GuideMVC_.Controllers
                         Address = addUserModel.Address,
                         Phone = addUserModel.Phone,
                         Homeland = addUserModel.Homeland,
-                        
+
                         UserId = user.Id,
                         GenderId = addUserModel.GenderId
                     };
@@ -102,6 +104,7 @@ namespace GuideMVC_.Controllers
                     }
                 }
             }
+
             return View();
         }
 
@@ -160,7 +163,7 @@ namespace GuideMVC_.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddRelative(int toPersonId, int fromPersonId, int relativeTypeId)
+        public IActionResult AddRelative(int toPersonId, int fromPersonId, int relativeTypeId, int gender, int marriageId)
         {
             AddRelativeModel addRelativeModel = new AddRelativeModel()
             {
@@ -168,8 +171,9 @@ namespace GuideMVC_.Controllers
                 FromPersonId = fromPersonId,
                 RelativeTypeId = relativeTypeId,
                 RelativeTypes = _db.RelativeTypes.ToList(),
-                FromPersons = _db.Persons.ToList(),
+                FromPersons = relativeTypeId == 1? _db.Persons.Where(n=>n.GenderId == gender).ToList() : _db.Persons.ToList(),
                 ToPersons = _db.Persons.ToList(),
+                MarriageId = marriageId
             };
             return View(addRelativeModel);
         }
@@ -177,15 +181,51 @@ namespace GuideMVC_.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRelative(AddRelativeModel addRelativeModel)
         {
+            if (addRelativeModel.RelativeTypeId == 1)
+            {
+                var toPerson = _db.Persons.FirstOrDefault(n => n.Id == addRelativeModel.ToPersonId);
+                var fromPerson = _db.Persons.FirstOrDefault(n => n.Id == addRelativeModel.FromPersonId);
+
+                if (toPerson is null || fromPerson is null)
+                    return RedirectToAction("Profile");
+                
+                Marriage marriage = new Marriage()
+                {
+                    WeddDate = addRelativeModel.WeddDate,
+                    IsDivorced = addRelativeModel.IsDivorced,
+                    DivorceDate = addRelativeModel.DivorceDate,
+                    Description = $"{toPerson.Firstname} и {fromPerson.Firstname}"
+                };
+                
+                try
+                {
+                    await _db.Marriages.AddAsync(marriage);
+                    await _db.SaveChangesAsync();
+                    addRelativeModel.MarriageId = marriage.Id;
+                }
+                catch(InvalidOperationException ex)
+                {
+                    return RedirectToAction("Profile");
+                }
+            }
+            
             var relative = new UserRelative()
             {
                 ToUserId = addRelativeModel.ToPersonId,
                 FromUserId = addRelativeModel.FromPersonId,
-                RelativeTypeId = addRelativeModel.RelativeTypeId
+                RelativeTypeId = addRelativeModel.RelativeTypeId,
+                MarriageId = addRelativeModel.MarriageId
             };
-
-            _db.UserRelatives.Add(relative);
-            await _db.SaveChangesAsync();
+            
+            try
+            {
+                await _db.UserRelatives.AddAsync(relative);
+                await _db.SaveChangesAsync();
+            }
+            catch(InvalidOperationException ex)
+            {
+                return RedirectToAction("Profile");
+            }
             return RedirectToAction("Profile", "User", new {id = addRelativeModel.ToPersonId});
         }
 
@@ -250,6 +290,28 @@ namespace GuideMVC_.Controllers
             await _db.UserRelatives.AddAsync(userRelative);
             await _db.SaveChangesAsync();
 
+
+            return RedirectToAction("Profile");
+        }
+
+        public async Task<IActionResult> DeleteMarriage(int toPersonId, int fromPersonId, int relativeTypeId)
+        {
+            var relative = _db.UserRelatives.Include(n => n.Marriage)
+                               .FirstOrDefault(n =>
+                                   n.ToUserId == toPersonId &&
+                                   n.FromUserId == fromPersonId &&
+                                   n.RelativeTypeId == relativeTypeId) ??
+                           _db.UserRelatives
+                               .FirstOrDefault(n =>
+                                   n.ToUserId == fromPersonId &&
+                                   n.FromUserId == toPersonId &&
+                                   n.RelativeTypeId == relativeTypeId);
+            if (relative is null)
+                return RedirectToAction("Profile");
+            var marriage = relative.Marriage;
+            marriage.DivorceDate = DateTime.Now;
+            marriage.IsDivorced = true;
+            await _db.SaveChangesAsync();
 
             return RedirectToAction("Profile");
         }

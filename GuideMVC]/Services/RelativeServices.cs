@@ -19,7 +19,9 @@ namespace GuideMVC_.Services
             _relatives = _db.UserRelatives
                 .Include(n => n.FromPerson)
                 .Include(n => n.ToPerson)
-                .ToList();;
+                .Include(n => n.Marriage)
+                .ToList();
+            ;
         }
 
         public List<PersonView> GetSiblings(int personId)
@@ -63,25 +65,44 @@ namespace GuideMVC_.Services
 
             return children.Union(spouseChildren).ToList();
         }
+
         public List<PersonView> GetChildrenViews(int parentId)
         {
             var childrenPv = new List<PersonView>();
             var spouseChildrenPv = new List<PersonView>();
+            var marriageChildrenPv = new List<PersonView>();
 
+            var spouse = GetSpouse(parentId);
             var children = GetPersonChildren(parentId);
-            var spouseChildren = GetPersonChildren(GetSpouse(parentId).Id);
+            var spouseChildren = spouse == null ? new List<Person>() : GetPersonChildren(spouse.Id);
 
-            children.ForEach(n =>
-            {
-                childrenPv.Add(new PersonView() {Person = n, IsParentChild = true});
-            });
+            children.ForEach(n => { childrenPv.Add(new PersonView() {Person = n, IsParentChild = true}); });
             spouseChildren.ForEach(n =>
             {
                 spouseChildrenPv.Add(new PersonView() {Person = n, IsParentChild = false});
             });
-            return childrenPv.Union(spouseChildrenPv).ToList();
+
+
+            var marriages = GetMarriages(parentId);
+            if (marriages != null)
+            {
+                foreach (var marriage in marriages)
+                {
+                    var marriageRelatives = marriage.Relatives
+                        .Where(n => n.RelativeTypeId == (int) RelativeTypes.Parents);
+                    var marriageChildren = marriageRelatives.Select(n => n.ToPerson).ToList();
+
+                    marriageChildren.ForEach(n =>
+                    {
+                        marriageChildrenPv.Add(new PersonView() {Person = n, IsParentChild = false});
+                    });
+                }
+            }
+
+            var list = childrenPv.Union(spouseChildrenPv).Union(marriageChildrenPv).Distinct().ToList();
+            return list;
         }
-        
+
         public List<Person> GetPersonChildren(int parentId)
         {
             var relatives = _relatives
@@ -117,11 +138,32 @@ namespace GuideMVC_.Services
         {
             var relative = _relatives
                 .Where(n => n.FromUserId == personId || n.ToUserId == personId)
+                .Where(n => n.MarriageId != null && n.Marriage.IsDivorced != true)
                 .FirstOrDefault(n => n.RelativeTypeId == (int) RelativeTypes.Spouse);
             if (relative is null)
-                return new Person();
+                return null;
             var spouse = relative.FromUserId == personId ? relative.ToPerson : relative.FromPerson;
             return spouse;
+        }
+
+        public Marriage GetMarriage(int personId)
+        {
+            var relative = _relatives
+                .Where(n => n.FromUserId == personId || n.ToUserId == personId)
+                .Where(n => n.MarriageId != null && n.Marriage.IsDivorced != true)
+                .FirstOrDefault(n => n.RelativeTypeId == (int) RelativeTypes.Spouse);
+            var marriage = relative?.Marriage;
+            return marriage;
+        }
+
+        public List<Marriage> GetMarriages(int personId)
+        {
+            var relatives = _relatives
+                .Where(n => n.FromUserId == personId || n.ToUserId == personId)
+                .Where(n => n.MarriageId != null)
+                .Where(n => n.RelativeTypeId == (int) RelativeTypes.Spouse).ToList();
+            var marriages = relatives.Select(n => n.Marriage).ToList();
+            return marriages;
         }
     }
 }

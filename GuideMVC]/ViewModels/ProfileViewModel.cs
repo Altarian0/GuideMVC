@@ -16,6 +16,8 @@ namespace GuideMVC_.ViewModels
         public Person Grandfather { get; set; }
         public Person Grandmother { get; set; }
         public Person Spouse { get; set; }
+        public Marriage Marriage { get; set; }
+        public List<Marriage> Marriages { get; set; }
         public List<PersonView> Siblings { get; set; }
 
         public List<Person> Grandchildren { get; set; }
